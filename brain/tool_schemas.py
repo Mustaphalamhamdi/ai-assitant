@@ -216,7 +216,7 @@ TOOL_SCHEMAS = [
         "type": "function",
         "function": {
             "name": "play_youtube",
-            "description": "Search YouTube for a query and automatically play the first video result. Always use this for music or videos unless the user says Spotify.",
+            "description": "Search YouTube and automatically play the first video result. This tool opens Chrome and YouTube by itself — do NOT call open_app or open_url before it. Use for any music, video, or gaming content unless the user says Spotify.",
             "parameters": {
                 "type": "object",
                 "properties": {
