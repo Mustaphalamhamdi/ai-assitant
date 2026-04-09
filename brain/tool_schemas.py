@@ -2,6 +2,83 @@ TOOL_SCHEMAS = [
     {
         "type": "function",
         "function": {
+            "name": "type_text",
+            "description": (
+                "Type text at the current cursor position, exactly like a human typing on the keyboard. "
+                "Use this to enter commands in a terminal, type prompts into Claude Code, fill text fields, "
+                "or respond to any on-screen prompt. Always follow with press_key('return') to submit."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The text to type. Can be a shell command, a Claude Code prompt, or any other input."
+                    }
+                },
+                "required": ["text"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "press_key",
+            "description": (
+                "Press a key or keyboard shortcut, exactly like a human pressing keys. "
+                "Use this to submit commands (return), open terminals (ctrl+backtick), "
+                "interrupt processes (ctrl+c), clear the terminal (ctrl+l), "
+                "navigate history (up/down), or trigger any app shortcut. "
+                "Combine modifiers with '+': 'ctrl+backtick', 'cmd+k', 'shift+tab'."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "keys": {
+                        "type": "string",
+                        "description": (
+                            "Key or shortcut to press. Examples: "
+                            "'return' (submit/Enter), "
+                            "'escape' (cancel), "
+                            "'ctrl+backtick' (open VS Code terminal), "
+                            "'ctrl+c' (interrupt process), "
+                            "'ctrl+l' (clear terminal), "
+                            "'up' (previous command in history), "
+                            "'tab' (autocomplete), "
+                            "'cmd+k' (clear terminal on macOS)."
+                        )
+                    }
+                },
+                "required": ["keys"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "wait_seconds",
+            "description": (
+                "Wait for a number of seconds before the next action. "
+                "Use after opening an app, running a command, or any time you need to let "
+                "something load or process before reading the screen again. "
+                "Typical values: 1-3s for UI actions, 5-10s for app launches, "
+                "15-30s for long-running commands like Claude Code."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "seconds": {
+                        "type": "integer",
+                        "description": "Number of seconds to wait (1–60)."
+                    }
+                },
+                "required": ["seconds"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "open_app",
             "description": "Open a desktop application by name. Use for apps like VS Code, Chrome, Figma, Illustrator, Spotify, Terminal, etc.",
             "parameters": {

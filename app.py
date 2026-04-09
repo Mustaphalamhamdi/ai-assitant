@@ -74,6 +74,7 @@ from tools.browser_tools      import play_youtube, play_spotify, read_screen
 from tools.productivity_tools import (take_screenshot, read_clipboard,
                                        control_volume, start_focus_timer, remind_me)
 from tools.voice_tools        import switch_voice
+from tools.control_tools      import type_text, press_key, wait_seconds
 
 TOOL_MAP = {
     "open_app": open_app, "close_app": close_app,
@@ -87,6 +88,9 @@ TOOL_MAP = {
     "control_volume": control_volume, "start_focus_timer": start_focus_timer,
     "remind_me": remind_me,
     "switch_voice": switch_voice,
+    "type_text": type_text,
+    "press_key": press_key,
+    "wait_seconds": wait_seconds,
 }
 
 ACTION_SCHEMA: dict = {
