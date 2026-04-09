@@ -138,16 +138,14 @@ class AriaWorker(QThread):
         super().__init__()
         self._running = True
 
-    def _run_tool(self, action: str, params: dict) -> None:
+    def _tool_executor(self, action: str, params: dict) -> str:
         fn = TOOL_MAP.get(action)
         if fn is None:
-            _speak(f"I don't have a tool called {action}.")
-            return
+            return f"No tool named '{action}'."
         try:
-            signals.status.emit("speaking")
-            _speak(fn(**params))
+            return fn(**params)
         except Exception as e:
-            _speak(f"Tool error: {e}")
+            return f"Tool error: {e}"
 
     def _on_command(self, text: str):
         if not text.strip():
@@ -171,19 +169,16 @@ class AriaWorker(QThread):
             signals.log.emit(f"Running workflow: {wf['name']}", "system")
             _speak(f"Running {wf['name']}.")
             for step in wf["steps"]:
-                self._run_tool(step["action"], step.get("params", {}))
+                result = self._tool_executor(step["action"], step.get("params", {}))
+                signals.status.emit("speaking")
+                _speak(result)
             signals.status.emit("listening")
             return True
 
-        result = ask_gemini(text)
-        if result["type"] == "tool":
-            self._run_tool(result["action"], result.get("params", {}))
-        elif result["type"] == "tools":
-            for a in result["actions"]:
-                self._run_tool(a["action"], a.get("params", {}))
-        elif result["type"] == "speech":
-            signals.status.emit("speaking")
-            _speak(result.get("text", ""))
+        # Agentic loop — brain handles multi-step reasoning internally
+        final_text = ask_gemini(text, self._tool_executor, speak_fn=_speak)
+        signals.status.emit("speaking")
+        _speak(final_text)
         signals.status.emit("listening")
         return True
 
