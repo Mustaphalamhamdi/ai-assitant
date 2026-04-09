@@ -1,0 +1,40 @@
+{
+  "workflows": [],
+  "custom_apps": [
+    {
+      "id": "3e0242a4-20a8-4aa1-a2d1-98855a991b85",
+      "name": "Adobe illustrator",
+      "triggers": "open adobe illustrator",
+      "path": "/Applications/Adobe Illustrator 2026/Adobe Illustrator.app/"
+    },
+    {
+      "id": "53bea508-affa-4683-8f54-3b2e8733d645",
+      "name": "Adobe photoshop",
+      "triggers": "open Adobe Photoshop",
+      "path": "/Applications/Adobe Photoshop 2026/Adobe Photoshop 2026.app/"
+    },
+    {
+      "id": "f1f3b55e-2a51-47ae-9e88-ecf15b7ab410",
+      "name": "vscode",
+      "triggers": "open vscode",
+      "path": "/Users/mustapha/Downloads/Visual Studio Code.app/"
+    }
+  ],
+  "spotify_playlists": [
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "that track",
+      "uri": "spotify:track:7gD7d2dcr6kcftmLBHSZWs"
+    },
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "name": "my vibe",
+      "uri": "spotify:track:7gD7d2dcr6kcftmLBHSZWs"
+    },
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000003",
+      "name": "ديك الأغنية",
+      "uri": "spotify:track:7gD7d2dcr6kcftmLBHSZWs"
+    }
+  ]
+}

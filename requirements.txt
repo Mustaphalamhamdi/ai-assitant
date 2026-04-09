@@ -1,0 +1,23 @@
+# Core AI
+google-generativeai
+
+# Voice — wake word detection
+SpeechRecognition
+pyaudio
+
+# Voice — speech-to-text (command transcription)
+openai-whisper
+noisereduce
+numpy
+soundfile
+sounddevice
+
+# Voice — text-to-speech
+pyttsx3
+gTTS
+
+# Desktop GUI + system tray (cross-platform)
+PyQt6
+
+# macOS: hide app from Dock (optional, install if on macOS)
+# pyobjc-framework-Cocoa
