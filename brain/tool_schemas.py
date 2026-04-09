@@ -4,9 +4,10 @@ TOOL_SCHEMAS = [
         "function": {
             "name": "type_text",
             "description": (
-                "Type text at the current cursor position, exactly like a human typing on the keyboard. "
-                "Use this to enter commands in a terminal, type prompts into Claude Code, fill text fields, "
-                "or respond to any on-screen prompt. Always follow with press_key('return') to submit."
+                "Type text into the currently focused app on screen — a terminal, VS Code, a text field, etc. "
+                "ONLY use this when you are actively controlling the computer (e.g. running Claude Code, "
+                "typing a shell command, filling a form). "
+                "NEVER use this to reply to the user — speak to the user with plain text responses instead."
             ),
             "parameters": {
                 "type": "object",
@@ -25,11 +26,12 @@ TOOL_SCHEMAS = [
         "function": {
             "name": "press_key",
             "description": (
-                "Press a key or keyboard shortcut, exactly like a human pressing keys. "
-                "Use this to submit commands (return), open terminals (ctrl+backtick), "
-                "interrupt processes (ctrl+c), clear the terminal (ctrl+l), "
-                "navigate history (up/down), or trigger any app shortcut. "
-                "Combine modifiers with '+': 'ctrl+backtick', 'cmd+k', 'shift+tab'."
+                "Press a key or keyboard shortcut on the computer. "
+                "ONLY use when actively controlling an app on screen — opening a terminal, "
+                "submitting a command, interrupting a process, etc. "
+                "NEVER use this to reply to the user. "
+                "Examples: 'return' (submit), 'ctrl+backtick' (open VS Code terminal), "
+                "'ctrl+c' (interrupt), 'ctrl+l' (clear terminal), 'up' (command history)."
             ),
             "parameters": {
                 "type": "object",

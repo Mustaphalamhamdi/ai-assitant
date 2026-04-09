@@ -25,7 +25,7 @@ def _is_arabic(text: str) -> bool:
 
 
 _MODEL_ARABIC  = "llama-3.3-70b-versatile"
-_MODEL_DEFAULT = "llama-3.1-8b-instant"
+_MODEL_DEFAULT = "llama-3.3-70b-versatile"
 
 MAX_STEPS = 5
 
