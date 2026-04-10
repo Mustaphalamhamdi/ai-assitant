@@ -124,7 +124,7 @@ def transcribe() -> str:
                 file            = (os.path.basename(tmp_path), f.read()),
                 model           = "whisper-large-v3",
                 response_format = "verbose_json",
-                prompt          = "المتكلم يتحدث بالدارجة المغربية أو الإنجليزية أو الفرنسية.",
+                prompt          = "The speaker uses Moroccan Darija (Arabic script) or English only. Never transcribe as French.",
             )
 
         segments = getattr(result, "segments", None) or []
