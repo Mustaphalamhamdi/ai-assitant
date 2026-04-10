@@ -71,21 +71,37 @@ def _run_chrome_js(js: str, delay: float = 3.0) -> str:
 def play_youtube(query: str) -> str:
     """Search YouTube for query and play the first video result."""
     search_url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
-    if OS == "Darwin":
-        subprocess.Popen(["open", "-a", "Google Chrome", search_url])
-    else:
+
+    if OS != "Darwin":
         subprocess.Popen(["cmd", "/c", "start", search_url], shell=True)
         return f"Opened YouTube search for {query}."
 
-    # Wait for page to load then click first video
-    time.sleep(5)
-    result = _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=2)
+    # Open in Chrome and bring it to front
+    subprocess.Popen(["open", "-a", "Google Chrome", search_url])
+    time.sleep(1)
+    subprocess.run(["osascript", "-e", 'tell application "Google Chrome" to activate'],
+                   capture_output=True, timeout=5)
+
+    # Wait for page and results to fully load
+    time.sleep(8)
+
+    # Attempt 1
+    result = _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=1)
     if "ok" in result:
         return f"Playing {query} on YouTube."
-    # Retry once with longer wait
-    time.sleep(4)
-    _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=2)
-    return f"Playing {query} on YouTube."
+
+    # Attempt 2 — give YouTube more time
+    time.sleep(5)
+    result = _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=1)
+    if "ok" in result:
+        return f"Playing {query} on YouTube."
+
+    # JS injection failed — Chrome permission not enabled
+    return (
+        f"Opened YouTube search for '{query}' but could not click the video automatically. "
+        "To fix: open Chrome → View menu → Developer → tick 'Allow JavaScript from Apple Events'. "
+        "Do that once and it will auto-play every time."
+    )
 
 
 # ── Spotify playback ─────────────────────────────────────────────────────────
