@@ -10,7 +10,7 @@ import subprocess
 PROJECT = os.path.dirname(os.path.abspath(__file__))
 PYTHON  = os.path.join(PROJECT, "venv", "bin", "python")
 HOME    = os.path.expanduser("~")
-APP_DIR = os.path.join(HOME, "Applications")
+APP_DIR = "/Applications"
 APP     = os.path.join(APP_DIR, "Aria.app")
 
 os.makedirs(APP_DIR, exist_ok=True)
