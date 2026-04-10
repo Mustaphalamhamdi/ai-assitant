@@ -17,91 +17,74 @@ from config import GROQ_API_KEY, OS
 
 # ── YouTube playback ──────────────────────────────────────────────────────────
 
-_CLICK_FIRST_VIDEO_JS = """
-(function() {
-    var selectors = [
-        'ytd-video-renderer a#video-title',
-        'ytd-video-renderer a.yt-simple-endpoint[href*="/watch"]',
-        'ytd-rich-item-renderer a#video-title-link',
-        'ytd-rich-grid-media a#video-title-link',
-        'ytd-compact-video-renderer a#video-title',
-        'a#video-title-link[href*="/watch"]',
-        'a#video-title[href*="/watch"]',
-        'ytd-thumbnail a[href*="/watch"]'
-    ];
-    for (var i = 0; i < selectors.length; i++) {
-        var els = document.querySelectorAll(selectors[i]);
-        if (els && els.length > 0) {
-            for (var j = 0; j < els.length; j++) {
-                var href = els[j].href || '';
-                if (href.indexOf('/shorts/') === -1 && href.indexOf('/watch') !== -1) {
-                    els[j].click();
-                    return 'ok';
-                }
-            }
-        }
-    }
-    return 'not_found';
-})()
-"""
+def _get_first_youtube_video_id(query: str) -> str | None:
+    """
+    Fetch YouTube search results server-side and extract the first non-Shorts video ID.
+    No browser permissions needed — pure HTTP request + regex.
+    """
+    import urllib.request
+    import re
 
-_CHROME_JS_SCRIPT = """
-tell application "Google Chrome"
+    url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
+    req = urllib.request.Request(url, headers={
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+        )
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=10) as r:
+            html = r.read().decode("utf-8")
+    except Exception:
+        return None
+
+    # Primary: watchEndpoint video IDs (organic search results, not ads)
+    matches = re.findall(r'"watchEndpoint"[^}]*?"videoId":"([a-zA-Z0-9_-]{11})"', html)
+    if matches:
+        return matches[0]
+
+    # Fallback: any videoId in the page
+    matches = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
+    return matches[0] if matches else None
+
+
+def play_youtube(query: str) -> str:
+    """Search YouTube and open the first video result directly in Chrome. No permissions needed."""
+    if OS != "Darwin":
+        url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
+        subprocess.Popen(["cmd", "/c", "start", url], shell=True)
+        return f"Opened YouTube search for {query}."
+
+    video_id = _get_first_youtube_video_id(query)
+    if video_id:
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        subprocess.Popen(["open", "-a", "Google Chrome", video_url])
+        return f"Playing {query} on YouTube."
+
+    # Fallback: open search page
+    search_url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
+    subprocess.Popen(["open", "-a", "Google Chrome", search_url])
+    return f"Opened YouTube search for '{query}'."
+
+
+def _run_chrome_js(js: str, delay: float = 1.0) -> str:
+    """Execute JavaScript in Chrome's active tab via AppleScript (requires Allow JS from Apple Events)."""
+    if OS != "Darwin":
+        return "Browser JS control only supported on macOS."
+    js_escaped = js.replace('"', '\\"').replace("\n", " ")
+    script = f"""tell application "Google Chrome"
     activate
     delay {delay}
     tell front window
         tell active tab
-            execute javascript "{js}"
+            execute javascript "{js_escaped}"
         end tell
     end tell
-end tell
-"""
-
-
-def _run_chrome_js(js: str, delay: float = 3.0) -> str:
-    if OS != "Darwin":
-        return "Browser control only supported on macOS."
-    js_escaped = js.replace('"', '\\"').replace("\n", " ")
-    script = _CHROME_JS_SCRIPT.format(delay=delay, js=js_escaped)
+end tell"""
     result = subprocess.run(["osascript", "-e", script],
                              capture_output=True, text=True, timeout=15)
     return result.stdout.strip()
-
-
-def play_youtube(query: str) -> str:
-    """Search YouTube for query and play the first video result."""
-    search_url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
-
-    if OS != "Darwin":
-        subprocess.Popen(["cmd", "/c", "start", search_url], shell=True)
-        return f"Opened YouTube search for {query}."
-
-    # Open in Chrome and bring it to front
-    subprocess.Popen(["open", "-a", "Google Chrome", search_url])
-    time.sleep(1)
-    subprocess.run(["osascript", "-e", 'tell application "Google Chrome" to activate'],
-                   capture_output=True, timeout=5)
-
-    # Wait for page and results to fully load
-    time.sleep(8)
-
-    # Attempt 1
-    result = _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=1)
-    if "ok" in result:
-        return f"Playing {query} on YouTube."
-
-    # Attempt 2 — give YouTube more time
-    time.sleep(5)
-    result = _run_chrome_js(_CLICK_FIRST_VIDEO_JS, delay=1)
-    if "ok" in result:
-        return f"Playing {query} on YouTube."
-
-    # JS injection failed — Chrome permission not enabled
-    return (
-        f"Opened YouTube search for '{query}' but could not click the video automatically. "
-        "To fix: open Chrome → View menu → Developer → tick 'Allow JavaScript from Apple Events'. "
-        "Do that once and it will auto-play every time."
-    )
 
 
 # ── Spotify playback ─────────────────────────────────────────────────────────
