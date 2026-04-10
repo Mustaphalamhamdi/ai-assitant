@@ -8,7 +8,7 @@ import stat
 import subprocess
 
 PROJECT = os.path.dirname(os.path.abspath(__file__))
-PYTHON  = os.path.join(PROJECT, "venv", "bin", "python")
+PYTHON  = "/opt/anaconda3/bin/python3"
 HOME    = os.path.expanduser("~")
 APP_DIR = "/Applications"
 APP     = os.path.join(APP_DIR, "Aria.app")
