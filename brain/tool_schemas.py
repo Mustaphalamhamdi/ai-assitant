@@ -229,6 +229,18 @@ TOOL_SCHEMAS = [
     {
         "type": "function",
         "function": {
+            "name": "close_tab",
+            "description": "Close the currently active tab in Chrome. Use this to stop a YouTube video, close a webpage, or dismiss any open browser tab. Do NOT use control_volume to stop YouTube — use this instead.",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "play_spotify",
             "description": "Open Spotify and play a track, playlist, or album by name or URI. Use when user says 'Spotify' or names a saved playlist.",
             "parameters": {

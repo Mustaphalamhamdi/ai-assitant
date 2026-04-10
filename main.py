@@ -8,7 +8,7 @@ from tools.app_control import open_app, close_app
 from tools.dev_tools import open_project, run_terminal
 from tools.design_tools import create_design_project, open_design_folder, move_exports_to_desktop
 from tools.web_tools import open_url, search_web
-from tools.browser_tools import play_youtube, play_spotify, read_screen
+from tools.browser_tools import play_youtube, play_spotify, read_screen, close_tab
 from tools.productivity_tools import (
     take_screenshot,
     read_clipboard,
@@ -27,6 +27,7 @@ TOOL_MAP = {
     "move_exports_to_desktop": move_exports_to_desktop,
     "search_web": search_web, "open_url": open_url,
     "play_youtube": play_youtube, "play_spotify": play_spotify, "read_screen": read_screen,
+    "close_tab": close_tab,
     "take_screenshot": take_screenshot, "read_clipboard": read_clipboard,
     "control_volume": control_volume, "start_focus_timer": start_focus_timer,
     "remind_me": remind_me,

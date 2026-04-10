@@ -68,6 +68,24 @@ def play_youtube(query: str) -> str:
     return f"Opened YouTube search for '{query}'."
 
 
+def close_tab() -> str:
+    """Close the active tab in Chrome using Chrome's native AppleScript (no Accessibility needed)."""
+    if OS != "Darwin":
+        return "Tab control only supported on macOS."
+    script = """
+tell application "Google Chrome"
+    if (count of windows) > 0 then
+        close active tab of front window
+    end if
+end tell
+"""
+    result = subprocess.run(["osascript", "-e", script],
+                             capture_output=True, text=True, timeout=5)
+    if result.returncode == 0:
+        return "Closed the active tab."
+    return f"Could not close tab: {result.stderr.strip()}"
+
+
 def _run_chrome_js(js: str, delay: float = 1.0) -> str:
     """Execute JavaScript in Chrome's active tab via AppleScript (requires Allow JS from Apple Events)."""
     if OS != "Darwin":
