@@ -42,11 +42,21 @@ info_plist = f"""<?xml version="1.0" encoding="UTF-8"?>
     <string>Aria needs Accessibility access to type commands and control your computer.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Aria listens for your voice commands.</string>
+    <key>CFBundleIconFile</key>
+    <string>aria</string>
 </dict>
 </plist>"""
 
 with open(os.path.join(APP, "Contents", "Info.plist"), "w") as f:
     f.write(info_plist)
+
+# Icon
+resources_dir = os.path.join(APP, "Contents", "Resources")
+os.makedirs(resources_dir, exist_ok=True)
+icon_src = os.path.join(PROJECT, "aria.icns")
+if os.path.exists(icon_src):
+    import shutil
+    shutil.copy2(icon_src, os.path.join(resources_dir, "aria.icns"))
 
 # Launcher script — the actual executable inside the bundle
 launcher = f"""#!/bin/bash
